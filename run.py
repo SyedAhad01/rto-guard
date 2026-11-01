@@ -1,8 +1,9 @@
 """python run.py [--csv data/orders_sample.csv] [--llm]
 Trains on everything before the last full month, scores that month, writes out/backtest.csv, out/findings.txt, out/dashboard.html"""
-import argparse, json, html
+import argparse, json, html, os
 import pandas as pd
 from rto.engine import load_cfg, clean, add_features, RiskModel, decide, rto_cost
+os.makedirs("out", exist_ok=True)
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--csv", default="data/orders_sample.csv")
@@ -54,7 +55,7 @@ L.append(f"\nRTO Rs lost on all orders in data: Rs {df.rto.sum()*cost:,.0f}")
 tm = test.groupby("action").agg(orders=("rto", "size"), actual_rto=("rto", "mean"), saved=("saved", "sum"), lost=("lost", "sum"))
 L.append(f"\nBACKTEST on {last} (trained on earlier months):\n{tm.round(2).to_string()}")
 L.append(f"Net impact Rs {test.saved.sum()-test.lost.sum():,.0f}  (saved {test.saved.sum():,.0f} - lost {test.lost.sum():,.0f}); baseline RTO loss that month Rs {test.rto.sum()*cost:,.0f}")
-open("out/findings.txt", "w").write("\n".join(L)); print("\n".join(L[-8:]))
+open("out/findings.txt", "w", encoding="utf-8").write("\n".join(L)); print("\n".join(L[-8:]))
 
 # ---- dashboard (yesterday = latest day in data) ----
 y = test[test.day == test.day.max()]
@@ -64,7 +65,7 @@ rows = "".join(f"<tr><td>{html.escape(r.order_id)}</td><td>{r.action}</td><td>{r
                for r in y[y.action != "SHIP"].itertuples())
 tiles = "".join(f"<div class=t><b>{cnt[k]}</b><span>{names[k]}</span></div>" for k in names)
 s, l = y.saved.sum(), y.lost.sum()
-open("out/dashboard.html", "w").write(f"""<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+open("out/dashboard.html", "w", encoding="utf-8").write(f"""<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>RTO Guard - {y.day.max()}</title><style>:root{{--bg:#fff;--fg:#1a1a1a;--card:#f4f4f6}}@media(prefers-color-scheme:dark){{:root{{--bg:#16161a;--fg:#eee;--card:#25252b}}}}
 body{{font:15px system-ui;background:var(--bg);color:var(--fg);max-width:900px;margin:24px auto;padding:0 16px}}.g{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}}
 .t{{background:var(--card);border-radius:10px;padding:14px}}.t b{{display:block;font-size:28px}}.t span{{opacity:.7}}table{{width:100%;border-collapse:collapse;margin-top:8px}}td,th{{text-align:left;padding:6px;border-bottom:1px solid #8883;font-size:13px}}</style>
