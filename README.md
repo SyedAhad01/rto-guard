@@ -60,7 +60,7 @@ Edit `config.yaml` (risk thresholds, discount rules, marketing guard, WhatsApp t
 | Confirm | 19 | 63% |
 | Hold | 6 | 83% |
 
-Estimated net impact: +₹2,591 on 329 orders. These ₹ figures use assumptions in `config.yaml` (confirmation stops 60% of would-be returns, 30% accept the prepaid offer), not measured results.
+Estimated net impact: +₹2,111 on 329 orders, after counting the ₹300 ad cost of every genuine new customer who is held or confirmed away. These ₹ figures use assumptions in `config.yaml` (confirmation stops 60% of would-be returns, 30% accept the prepaid offer), not measured results.
 
 ## Files
 
