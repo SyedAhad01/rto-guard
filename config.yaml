@@ -6,6 +6,7 @@ costs:                       # Rs per RTO
   damage_rate: 0.08          # share of returns that can't be resold
   product_cost: 180
   gross_margin: 0.62         # on a delivered order
+  new_customer_cac: 300
   prepaid_rto_rate: 0.04
 thresholds:                  # RTO probability (0.30 = 30% chance of return)
   ship_as_is_below: 0.22

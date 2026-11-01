@@ -28,11 +28,12 @@ cost, c, bt = rto_cost(cfg), cfg["costs"], cfg["backtest_assumptions"]
 test["margin"] = c["gross_margin"] * test.order_value
 def impact(r):
     saved = lost = 0.0
+    cac = c.get("new_customer_cac", 300) if r.new_cust else 0
     if r.action == "HOLD":
-        saved, lost = (cost, 0) if r.rto else (0, r.margin)
+        saved, lost = (cost, 0) if r.rto else (0, r.margin + cac)
     elif r.action == "CONFIRM":
         if r.rto: saved = bt["confirm_catches_rto"] * cost
-        else: lost = bt["confirm_loses_genuine"] * r.margin
+        else: lost = bt["confirm_loses_genuine"] * (r.margin + cac)
     elif r.action == "NUDGE":
         from rto.engine import prepaid_offer
         disc = prepaid_offer(r.p_rto, r.order_value, cfg)["discount"]
