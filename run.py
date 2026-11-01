@@ -2,7 +2,7 @@
 Trains on everything before the last full month, scores that month, writes out/backtest.csv, out/findings.txt, out/dashboard.html"""
 import argparse, json, html, os
 import pandas as pd
-from rto.engine import load_cfg, clean, add_features, RiskModel, decide, rto_cost
+from rto.engine import load_cfg, clean, add_features, RiskModel, decide, rto_cost, ADS
 os.makedirs("out", exist_ok=True)
 
 ap = argparse.ArgumentParser()
@@ -28,7 +28,7 @@ cost, c, bt = rto_cost(cfg), cfg["costs"], cfg["backtest_assumptions"]
 test["margin"] = c["gross_margin"] * test.order_value
 def impact(r):
     saved = lost = 0.0
-    cac = c.get("new_customer_cac", 300) if r.new_cust else 0
+    cac = c.get("new_customer_cac", 300) if (r.new_cust and r.utm_source in ADS) else 0
     if r.action == "HOLD":
         saved, lost = (cost, 0) if r.rto else (0, r.margin + cac)
     elif r.action == "CONFIRM":
