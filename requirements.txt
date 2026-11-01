@@ -1,0 +1,3 @@
+pandas
+pyyaml
+anthropic   # optional, only for --llm

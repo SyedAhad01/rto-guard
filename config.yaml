@@ -1,0 +1,29 @@
+# ===== EDIT ME (no code needed). Save, re-run `python run.py`. =====
+costs:                       # Rs per RTO
+  forward_shipping: 65
+  return_shipping: 65
+  packaging_handling: 25
+  damage_rate: 0.08          # share of returns that can't be resold
+  product_cost: 180
+  gross_margin: 0.62         # on a delivered order
+  prepaid_rto_rate: 0.04
+thresholds:                  # RTO probability (0.30 = 30% chance of return)
+  ship_as_is_below: 0.22
+  nudge_prepaid_below: 0.40
+  confirm_below: 0.60        # this..that -> WhatsApp confirmation; above -> hold (if money rule agrees)
+marketing_guard:
+  new_customer_extra_value: 300   # Rs: value of a new customer's future orders (ad spend ~Rs300)
+  never_cancel_new_customers_from_ads: true  # ads orders are confirmed, not cancelled, unless junk
+prepaid_discount:
+  share_of_saving: 0.70      # give customer 70% of the expected RTO saving
+  max_pct_of_order: 0.07     # never more than 7% of order value
+  min_rupees: 20
+whatsapp:
+  reminder_after_hours: 4
+  expire_after_hours: 24
+backtest_assumptions:        # used only by the dashboard's Rs estimates
+  confirm_catches_rto: 0.60  # share of would-be RTOs stopped by a confirmation step
+  confirm_loses_genuine: 0.10
+  nudge_accept_rate: 0.30
+model:
+  smoothing: 25              # higher = trust small segments less
